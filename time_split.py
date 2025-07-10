@@ -9,8 +9,8 @@ from tkinter import filedialog, simpledialog, messagebox
 import time_range
 
 
-TIME_COL = 'time'
-DATE_COL = 'date'
+TIME_COL = 'Time'
+DATE_COL = 'Date'
 
 
 def main():
@@ -73,12 +73,14 @@ def process_file(start, end, path, extension_name, save_path):
         df = None
         if os.path.isfile(path):
             filetype = os.path.splitext(path)[1].lower()
+            column_names = ['Date', 'Time', 'Counts', 'Temp', 'Sampling Mode', 'Time Elapsed', '#msgs', 'Tank Level', 'Battery Count', 'Garbage', 'Error Status']  # your desired headers
             if filetype == '.csv':
-                df = pd.read_csv(path)
+                df = pd.read_csv(path, header=None, names=column_names)
             elif filetype =='.xlsx':
-                df = pd.read_excel(path)
+                df = pd.read_excel(path, header=None, names=column_names)
             else:
                 return
+            df = df.drop(index=0)  # Drop the first row
             df = process_df(df, start, end)
             save_to_xlsx(df, path, save_path, extension_name)
             
@@ -90,9 +92,10 @@ def process_file(start, end, path, extension_name, save_path):
 
 
 def process_df(df, start, end):
+    df[TIME_COL] = pd.to_datetime(df[TIME_COL], format='%I:%M:%S %p').dt.strftime('%H:%M:%S')
     df['datetime'] = pd.to_datetime(df[DATE_COL] + ' ' + df[TIME_COL], format='%m/%d/%Y %H:%M:%S')
     filtered_df = df[(df['datetime'] >= start) & (df['datetime'] <= end)]
-    df = df.drop('datetime', axis=1)
+    filtered_df = filtered_df.drop('datetime', axis=1)
     return filtered_df
     
 def save_to_xlsx(df, path,  save_path, extension):
