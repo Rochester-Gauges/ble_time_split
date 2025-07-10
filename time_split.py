@@ -8,6 +8,11 @@ from tkinter import filedialog, simpledialog, messagebox
 
 import time_range
 
+
+TIME_COL = 'time'
+DATE_COL = 'date'
+
+
 def main():
     root = tk.Tk()
     root.withdraw()
@@ -85,7 +90,7 @@ def process_file(start, end, path, extension_name, save_path):
 
 
 def process_df(df, start, end):
-    df['datetime'] = pd.to_datetime(df['date'] + ' ' + df['time'], format='%m/%d/%Y %H:%M:%S')
+    df['datetime'] = pd.to_datetime(df[DATE_COL] + ' ' + df[TIME_COL], format='%m/%d/%Y %H:%M:%S')
     filtered_df = df[(df['datetime'] >= start) & (df['datetime'] <= end)]
     df = df.drop('datetime', axis=1)
     return filtered_df
