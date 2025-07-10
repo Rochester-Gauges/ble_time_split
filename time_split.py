@@ -92,7 +92,7 @@ def process_file(start, end, path, extension_name, save_path):
 def process_df(df, start, end):
     df['datetime'] = pd.to_datetime(df[DATE_COL] + ' ' + df[TIME_COL], format='%m/%d/%Y %H:%M:%S')
     filtered_df = df[(df['datetime'] >= start) & (df['datetime'] <= end)]
-    df = df.drop('datetime', axis=1)
+    filtered_df = filtered_df.drop('datetime', axis=1)
     return filtered_df
     
 def save_to_xlsx(df, path,  save_path, extension):
