@@ -96,7 +96,7 @@ def process_df(df, start, end):
     return filtered_df
     
 def save_to_xlsx(df, path,  save_path, extension):
-    parsed_file_name = os.path.splitext(path)[0] + '_' + extension +  '.xlsx'
+    parsed_file_name = os.path.splitext(os.path.basename(path))[0] + '_' + extension +  '.xlsx'
     full_path = os.path.join(save_path, parsed_file_name)
     if os.path.exists(full_path):
         os.remove(full_path)
@@ -107,7 +107,7 @@ def save_to_xlsx(df, path,  save_path, extension):
 def check_if_open(path):
     try:
         with open(path, "rb+"):
-            pass  # File is accessible
+            return
     except PermissionError:
         messagebox.showwarning("File Open", "Please close file before continuing program")
 
