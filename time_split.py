@@ -74,12 +74,14 @@ def process_file(start, end, path, extension_name, save_path):
         if os.path.isfile(path):
             filetype = os.path.splitext(path)[1].lower()
             if filetype == '.csv':
-                df = pd.read_csv(path)
+                df = pd.read_csv(path, small_memory=False)
             elif filetype =='.xlsx':
-                df = pd.read_excel(path)
+                df = pd.read_excel(path, small_memory=False)
             else:
                 return
             df = process_df(df, start, end)
+            if df is None:
+                return
             save_to_xlsx(df, path, save_path, extension_name)
             
         
@@ -90,10 +92,14 @@ def process_file(start, end, path, extension_name, save_path):
 
 
 def process_df(df, start, end):
-    df['datetime'] = pd.to_datetime(df[DATE_COL] + ' ' + df[TIME_COL], format='%m/%d/%Y %H:%M:%S')
-    filtered_df = df[(df['datetime'] >= start) & (df['datetime'] <= end)]
-    filtered_df = filtered_df.drop('datetime', axis=1)
-    return filtered_df
+    try:
+        df['datetime'] = pd.to_datetime(df[DATE_COL] + ' ' + df[TIME_COL], format='%m/%d/%Y %H:%M:%S')
+        filtered_df = df[(df['datetime'] >= start) & (df['datetime'] <= end)]
+        filtered_df = filtered_df.drop('datetime', axis=1)
+        return filtered_df
+    except Exception:
+        traceback.print_exc()
+        return None
     
 def save_to_xlsx(df, path,  save_path, extension):
     parsed_file_name = os.path.splitext(os.path.basename(path))[0] + '_' + extension +  '.xlsx'
