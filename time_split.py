@@ -76,7 +76,7 @@ def process_file(start, end, path, extension_name, save_path):
             if filetype == '.csv':
                 df = pd.read_csv(path, small_memory=False)
             elif filetype =='.xlsx':
-                df = pd.read_excel(path, small_memory=False)
+                df = pd.read_excel(path)
             else:
                 return
             df = process_df(df, start, end)
