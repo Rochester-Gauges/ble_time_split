@@ -77,7 +77,7 @@ def process_file(start, end, path, extension_name, save_path):
             if filetype == '.csv':
                 df = pd.read_csv(path, header=None, names=column_names, low_memory=False)
             elif filetype =='.xlsx':
-                df = pd.read_excel(path, header=None, names=column_names, low_memory=False)
+                df = pd.read_excel(path, header=None, names=column_names)
             else:
                 return
             df = df.drop(index=0)  # Drop the first row
